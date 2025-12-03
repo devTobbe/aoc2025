@@ -1,6 +1,5 @@
 // IO utility
 use std::{
-    error::Error,
     fs::File,
     io::{self},
     path::Path,
