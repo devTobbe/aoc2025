@@ -40,6 +40,10 @@ impl Dial {
         self.val = (self.val + Self::DIAL_MAX - (i % Self::DIAL_MAX)) % Self::DIAL_MAX;
     }
 
+    pub fn eval_input(&self, i: u16) -> u16 {
+        i / Self::DIAL_MAX
+    }
+
     pub fn rotation(&mut self, s: Side, dist: u16) {
         match s {
             Side::Left => {
@@ -99,6 +103,41 @@ pub fn day1p1() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
+// Be careful: if the dial were pointing at 50, a single rotation like R1000
+// would cause the dial to point at 0 ten times before returning back to 50!
 pub fn day1p2() -> Result<(), Box<dyn Error>> {
-    todo!();
+    // Read inputs file
+    let file = io::read_file("inputs/day1")?;
+
+    // Get every line
+    let parts = file.split("\n");
+
+    let mut dial = Dial::new();
+    let mut counter = 0;
+
+    for part in parts {
+        if part.is_empty() {
+            continue;
+        }
+        // Extract
+        let side = &part[..1];
+        let digit = &part[1..];
+
+        // Transform
+        let sside = Side::new(side);
+        let ddigit = digit.to_string().parse::<u16>()?;
+
+        println!("side: {}, ddigit: {}", side, ddigit);
+
+        counter += dial.eval_input(ddigit);
+        dial.rotation(sside, ddigit);
+        if dial.val() == 0 {
+            println!("dial is: {}\n", dial.val);
+            counter += 1;
+        }
+    }
+
+    println!("{}", &counter);
+
+    Ok(())
 }
