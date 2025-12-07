@@ -32,12 +32,16 @@ impl Dial {
         self.val
     }
 
-    fn add(&mut self, i: u16) {
+    fn add(&mut self, i: u16) -> u16 {
+        let ret = self.eval_add(i);
         self.val = (self.val + i) % Self::DIAL_MAX;
+        ret
     }
 
-    fn subtract(&mut self, i: u16) {
+    fn subtract(&mut self, i: u16) -> u16 {
+        let ret = self.eval_subtract(i);
         self.val = (self.val + Self::DIAL_MAX - (i % Self::DIAL_MAX)) % Self::DIAL_MAX;
+        ret
     }
 
     pub fn eval_input(&self, i: u16) -> u16 {
@@ -48,25 +52,28 @@ impl Dial {
         if (self.val() + i) > Self::DIAL_MAX - 1 {
             return 1;
         }
-        return 0;
+        0
     }
 
     pub fn eval_subtract(&self, i: u16) -> u16 {
-        if (self.val() as i16 - i as i16) < Self::DIAL_MAX - 1 {
+        let casted_val: i16 = self.val() as i16;
+        let casted_i: i16 = i as i16;
+        let casted_max: i16 = Self::DIAL_MAX as i16;
+        if (casted_val - casted_i) < casted_max - 1 {
             return 1;
         }
-        return 0;
+        0
     }
 
-    pub fn rotation(&mut self, s: Side, dist: u16) {
+    pub fn rotation(&mut self, s: Side, dist: u16) -> u16{
         match s {
             Side::Left => {
-                self.subtract(dist);
+                self.subtract(dist)
             }
             Side::Right => {
-                self.add(dist);
+                self.add(dist)
             }
-            Side::Unknown => {}
+            Side::Unknown => {0}
         }
     }
 }
@@ -146,7 +153,7 @@ pub fn day1p2() -> Result<(), Box<dyn Error>> {
         // Good, gets if ddigit loops around several times
         counter += dial.eval_input(ddigit);
         // Gets whenever it ends on 0
-        dial.rotation(sside, ddigit);
+        counter += dial.rotation(sside, ddigit);
         if dial.val() == 0 {
             println!("dial is: {}\n", dial.val);
             counter += 1;
