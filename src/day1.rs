@@ -44,6 +44,20 @@ impl Dial {
         i / Self::DIAL_MAX
     }
 
+    pub fn eval_add(&self, i: u16) -> u16 {
+        if (self.val() + i) > Self::DIAL_MAX - 1 {
+            return 1;
+        }
+        return 0;
+    }
+
+    pub fn eval_subtract(&self, i: u16) -> u16 {
+        if (self.val() as i16 - i as i16) < Self::DIAL_MAX - 1 {
+            return 1;
+        }
+        return 0;
+    }
+
     pub fn rotation(&mut self, s: Side, dist: u16) {
         match s {
             Side::Left => {
@@ -129,7 +143,9 @@ pub fn day1p2() -> Result<(), Box<dyn Error>> {
 
         println!("side: {}, ddigit: {}", side, ddigit);
 
+        // Good, gets if ddigit loops around several times
         counter += dial.eval_input(ddigit);
+        // Gets whenever it ends on 0
         dial.rotation(sside, ddigit);
         if dial.val() == 0 {
             println!("dial is: {}\n", dial.val);
