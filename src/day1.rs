@@ -33,15 +33,15 @@ impl Dial {
     }
 
     fn add(&mut self, i: u16) -> u16 {
-        let ret = self.eval_add(i);
         self.val = (self.val + i) % Self::DIAL_MAX;
-        ret
+        // Already applied ... Not quite right
+        self.eval_add(i / Self::DIAL_MAX)
     }
 
     fn subtract(&mut self, i: u16) -> u16 {
-        let ret = self.eval_subtract(i);
         self.val = (self.val + Self::DIAL_MAX - (i % Self::DIAL_MAX)) % Self::DIAL_MAX;
-        ret
+        // Already applied ... Not quite right
+        self.eval_subtract(i / Self::DIAL_MAX)
     }
 
     pub fn eval_input(&self, i: u16) -> u16 {
@@ -50,6 +50,7 @@ impl Dial {
 
     pub fn eval_add(&self, i: u16) -> u16 {
         if (self.val() + i) > Self::DIAL_MAX - 1 {
+            println!("ADD val: {} i {} ", self.val(), i);
             return 1;
         }
         0
@@ -58,22 +59,18 @@ impl Dial {
     pub fn eval_subtract(&self, i: u16) -> u16 {
         let casted_val: i16 = self.val() as i16;
         let casted_i: i16 = i as i16;
-        let casted_max: i16 = Self::DIAL_MAX as i16;
-        if (casted_val - casted_i) < casted_max - 1 {
+        if (casted_val - casted_i) < 0 {
+            println!("SUB val: {} i {} ", self.val(), i);
             return 1;
         }
         0
     }
 
-    pub fn rotation(&mut self, s: Side, dist: u16) -> u16{
+    pub fn rotation(&mut self, s: Side, dist: u16) -> u16 {
         match s {
-            Side::Left => {
-                self.subtract(dist)
-            }
-            Side::Right => {
-                self.add(dist)
-            }
-            Side::Unknown => {0}
+            Side::Left => self.subtract(dist),
+            Side::Right => self.add(dist),
+            Side::Unknown => 0,
         }
     }
 }
