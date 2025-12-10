@@ -161,3 +161,6 @@ pub fn day1p2() -> Result<(), Box<dyn Error>> {
 
     Ok(())
 }
+
+// I have to somehow take the remainder after checking how many full spins the dial does and then
+// check whether or not it goes past 0
