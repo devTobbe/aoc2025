@@ -35,13 +35,20 @@ impl Dial {
     fn add(&mut self, i: u16) -> u16 {
         self.val = (self.val + i) % Self::DIAL_MAX;
         // Already applied ... Not quite right
-        self.eval_add(i / Self::DIAL_MAX)
+        if i >= Self::DIAL_MAX {
+            self.eval_add(i / Self::DIAL_MAX)
+        } else {
+            self.eval_add(i)
+        }
     }
 
     fn subtract(&mut self, i: u16) -> u16 {
         self.val = (self.val + Self::DIAL_MAX - (i % Self::DIAL_MAX)) % Self::DIAL_MAX;
         // Already applied ... Not quite right
-        self.eval_subtract(i / Self::DIAL_MAX)
+        if self.val != 0 {
+            return self.eval_subtract(i / Self::DIAL_MAX);
+        }
+        0
     }
 
     pub fn eval_input(&self, i: u16) -> u16 {
