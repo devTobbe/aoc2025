@@ -4,12 +4,16 @@ use crate::utils::io;
 
 #[derive(Debug)]
 struct IDPair {
-    bound: (u64, u64),
+    range: (u64, u64),
 }
 
 impl IDPair {
     pub fn new(low: u64, high: u64) -> IDPair {
-        IDPair { bound: (low, high) }
+        IDPair { range: (low, high) }
+    }
+
+    fn iter(&self) -> impl Iterator<Item = u64>  {
+        self.range.0..self.range.1
     }
 }
 
