@@ -28,49 +28,33 @@ impl Dial {
         Self { val: 50 }
     }
 
-    pub fn val(&self) -> u16 {
-        self.val
+    fn perform_movement_left(&mut self, dist: u16) {
+        self.val = (self.val + Self::DIAL_MAX - (dist % Self::DIAL_MAX)) % Self::DIAL_MAX;
+    }
+
+    fn perform_movement_right(&mut self, dist: u16) {
+        self.val = (self.val + dist) % Self::DIAL_MAX;
     }
 
     fn add(&mut self, i: u16) -> u16 {
-        self.val = (self.val + i) % Self::DIAL_MAX;
-        // Already applied ... Not quite right
-        if i >= Self::DIAL_MAX {
-            self.eval_add(i / Self::DIAL_MAX)
-        } else {
-            self.eval_add(i)
-        }
+        let full_passes = i / Self::DIAL_MAX;
+        let remainder = i % Self::DIAL_MAX;
+
+        let cross = if self.val + remainder  >= 100 { 1 } else { 0 };
+        println!("fp: {}, cross: {}", full_passes, cross);
+        self.perform_movement_right(i);
+        full_passes + cross
     }
 
     fn subtract(&mut self, i: u16) -> u16 {
-        self.val = (self.val + Self::DIAL_MAX - (i % Self::DIAL_MAX)) % Self::DIAL_MAX;
-        // Already applied ... Not quite right
-        if self.val != 0 {
-            return self.eval_subtract(i / Self::DIAL_MAX);
-        }
-        0
-    }
+        let full_passes = i / Self::DIAL_MAX;
+        let remainder = i % Self::DIAL_MAX;
+        let old = self.val;
 
-    pub fn eval_input(&self, i: u16) -> u16 {
-        i / Self::DIAL_MAX
-    }
-
-    pub fn eval_add(&self, i: u16) -> u16 {
-        if (self.val() + i) > Self::DIAL_MAX - 1 {
-            println!("ADD val: {} i {} ", self.val(), i);
-            return 1;
-        }
-        0
-    }
-
-    pub fn eval_subtract(&self, i: u16) -> u16 {
-        let casted_val: i16 = self.val() as i16;
-        let casted_i: i16 = i as i16;
-        if (casted_val - casted_i) < 0 {
-            println!("SUB val: {} i {} ", self.val(), i);
-            return 1;
-        }
-        0
+        self.perform_movement_left(i);
+        let cross = if remainder != 0 && self.val < old { 1 } else { 0 };
+        println!("fp: {}, extra: {}", full_passes, cross);
+        full_passes + cross
     }
 
     pub fn rotation(&mut self, s: Side, dist: u16) -> u16 {
@@ -84,48 +68,12 @@ impl Dial {
 
 impl Side {
     pub fn new(s: &str) -> Side {
-        match s {
+        match s.to_uppercase().as_str() {
             "R" => Side::Right,
             "L" => Side::Left,
             _ => Side::Unknown,
         }
     }
-}
-
-pub fn day1p1() -> Result<(), Box<dyn Error>> {
-    // Read inputs file
-    let file = io::read_file("inputs/day1")?;
-
-    // Get every line
-    let parts = file.split("\n");
-
-    let mut dial = Dial::new();
-    let mut counter = 0;
-
-    for part in parts {
-        if part.is_empty() {
-            continue;
-        }
-        // Extract
-        let side = &part[..1];
-        let digit = &part[1..];
-
-        // Transform
-        let sside = Side::new(side);
-        let ddigit = digit.to_string().parse::<u16>()?;
-
-        println!("side: {}, ddigit: {}", side, ddigit);
-
-        dial.rotation(sside, ddigit);
-        if dial.val() == 0 {
-            println!("dial is: {}\n", dial.val);
-            counter += 1;
-        }
-    }
-
-    println!("{}", &counter);
-
-    Ok(())
 }
 
 // Be careful: if the dial were pointing at 50, a single rotation like R1000
@@ -154,14 +102,12 @@ pub fn day1p2() -> Result<(), Box<dyn Error>> {
 
         println!("side: {}, ddigit: {}", side, ddigit);
 
-        // Good, gets if ddigit loops around several times
-        counter += dial.eval_input(ddigit);
         // Gets whenever it ends on 0
         counter += dial.rotation(sside, ddigit);
-        if dial.val() == 0 {
-            println!("dial is: {}\n", dial.val);
-            counter += 1;
-        }
+        //if dial.val() == 0 {
+        //    counter += 1;
+        //}
+        println!("dial is: {}, counter is {}\n", dial.val, counter);
     }
 
     println!("{}", &counter);
