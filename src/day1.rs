@@ -44,8 +44,8 @@ impl Dial {
         let full_passes = i / Self::DIAL_MAX;
         let remainder = i % Self::DIAL_MAX;
 
-        let cross = if self.val + remainder  > 100 { 1 } else { 0 };
-        let zeroed = if self.val == 0 {1} else {0};
+        let cross = if self.val + remainder > 100 { 1 } else { 0 };
+        let zeroed = if self.val == 0 { 1 } else { 0 };
         println!("fp: {}, cross: {}", full_passes, cross);
         self.perform_movement_right(i);
         full_passes + cross + zeroed
@@ -57,8 +57,15 @@ impl Dial {
         let old = self.val;
 
         self.perform_movement_left(i);
-        let cross = if (remainder != 0) && old < self.val { 1 } else { 0 };
-        println!("old:{}, val:{}, fp: {}, extra: {}, remainder: {}", old, self.val, full_passes, cross, remainder);
+        let cross = if (remainder != 0) && old < self.val {
+            1
+        } else {
+            0
+        };
+        println!(
+            "old:{}, val:{}, fp: {}, extra: {}, remainder: {}",
+            old, self.val, full_passes, cross, remainder
+        );
         full_passes + cross
     }
 
