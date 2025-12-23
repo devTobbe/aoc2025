@@ -10,5 +10,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     //day1::day1p2()
     //day2::day2p1()
     //day2::day2p2()
-    day3::day3p1()
+    //day3::day3p1()
+    day3::day3p2()
 }
