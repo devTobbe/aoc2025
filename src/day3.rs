@@ -27,12 +27,14 @@ pub fn day3p1() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
+// Attempts:
 // 168127598850742 - Too Low
+// 170418192256861 - RIGHT
 pub fn day3p2() -> Result<(), Box<dyn Error>> {
     const BASE: usize = 10;
     const DIGIT: usize = 12;
 
-    let file = io::read_file("inputs/d3t")?;
+    let file = io::read_file("inputs/d3")?;
     let banks = parse_file(&file);
 
     let mut total: usize = 0;
@@ -40,21 +42,15 @@ pub fn day3p2() -> Result<(), Box<dyn Error>> {
     for bank in banks {
         let blen = bank.len();
         let mut taken: Vec<usize> = vec![];
-        let hi = find_highest(&bank[0..blen - DIGIT]);
-        taken.push(hi.0);
 
-        for iter in 0..(DIGIT - 1) {
-            let max = bank
-                .iter()
-                .enumerate()
-                .filter(|(i, j)| !taken.contains(i) && i > &taken[iter])
-                .max_by_key(|(_, val)| *val)
-                .unwrap();
+        for iter in 0..DIGIT {
+            let floor = if iter == 0 { 0 } else { taken[iter - 1] + 1 };
+            let roof = blen - (DIGIT - iter);
 
-            taken.push(max.0);
+            let hi = find_highest(&bank[floor..=roof]);
+
+            taken.push(hi.0 + floor);
         }
-
-        taken.sort();
 
         let mut counter = DIGIT as u32;
         let mut sum = 0;
