@@ -90,6 +90,5 @@ fn parse_file(s: &str) -> Vec<Vec<usize>> {
         }
         banks.push(entry);
     }
-
     banks
 }
