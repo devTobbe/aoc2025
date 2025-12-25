@@ -1,5 +1,3 @@
-// TODO(tobbe): Da code
-
 use std::error::Error;
 
 use crate::utils::io;
@@ -29,7 +27,7 @@ pub fn day3p1() -> Result<(), Box<dyn Error>> {
 
 // Attempts:
 // 168127598850742 - Too Low
-// 170418192256861 - RIGHT
+// 170418192256861 - CORRECT
 pub fn day3p2() -> Result<(), Box<dyn Error>> {
     const BASE: usize = 10;
     const DIGIT: usize = 12;
