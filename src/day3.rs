@@ -1,4 +1,4 @@
-// TODO: Da code
+// TODO(tobbe): Da code
 
 use std::error::Error;
 
@@ -27,6 +27,7 @@ pub fn day3p1() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
+// 168127598850742 - Too Low
 pub fn day3p2() -> Result<(), Box<dyn Error>> {
     const BASE: usize = 10;
     const DIGIT: usize = 12;
@@ -42,11 +43,11 @@ pub fn day3p2() -> Result<(), Box<dyn Error>> {
         let hi = find_highest(&bank[0..blen - DIGIT]);
         taken.push(hi.0);
 
-        for i in 0..(DIGIT - 1) {
+        for iter in 0..(DIGIT - 1) {
             let max = bank
                 .iter()
                 .enumerate()
-                .filter(|(i, j)| !taken.contains(i) && i > &hi.0)
+                .filter(|(i, j)| !taken.contains(i) && i > &taken[iter])
                 .max_by_key(|(_, val)| *val)
                 .unwrap();
 
