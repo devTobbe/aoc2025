@@ -5,8 +5,23 @@ use crate::utils::io;
 pub fn day4p1() -> Result<(), Box<dyn Error>> {
     let file = io::read_file("inputs/d4t")?;
     let grid = parse_input(&file);
+    let total = 0;
+
+    for row in grid {
+        for col in row {}
+    }
 
     Ok(())
+}
+
+fn eval_position(grid: &[Vec<bool>], x: usize, y: usize) -> bool {
+    let slice = &grid[..=x + 1][y - 1..=y + 1];
+    for row in slice {
+        for col in row {}
+    }
+    let adjacent: usize = 0;
+
+    false
 }
 
 fn parse_input(input: &str) -> Vec<Vec<bool>> {
