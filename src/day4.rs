@@ -19,6 +19,41 @@ pub fn day4p1() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
+pub fn day4p2() -> Result<(), Box<dyn Error>> {
+    let file = io::read_file("inputs/d4")?;
+    let mut grid = parse_input(&file);
+    let mut total = 0;
+    let mut running = true;
+
+    // While there are accessible rolls of paper do:
+    // Find and register accessible rolls, in a list of tuples or smth
+    // Set all accessible rolls to false
+    // start over
+    while running {
+        let old_total = total;
+        let mut removeables: Vec<(usize, usize)> = Vec::new();
+
+        for row in 0..grid.len() {
+            for col in 0..grid[0].len() {
+                if neighbours(&grid, col, row, 4) && grid[row][col] {
+                    total += 1;
+                    removeables.push((col, row));
+                }
+            }
+        }
+        for remove in removeables {
+            grid[remove.1][remove.0] = false;
+        }
+
+        if old_total == total {
+            running = false;
+        }
+    }
+    println!("{total}");
+
+    Ok(())
+}
+
 // Evaluate a given position
 fn neighbours(grid: &[Vec<bool>], x: usize, y: usize, n: u64) -> bool {
     // Locally cast for neighbour math
