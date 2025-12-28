@@ -3,6 +3,7 @@ use std::{collections::HashSet, error::Error};
 use crate::utils::io;
 
 // 1040 - TOO HIGH
+// 862 - OK
 pub fn day5p1() -> Result<(), Box<dyn Error>> {
     // .0 lower bound .1 higher bound
     let mut ranges: Vec<(usize, usize)> = Vec::new();
@@ -21,7 +22,6 @@ pub fn day5p1() -> Result<(), Box<dyn Error>> {
         for range in &ranges {
             if &range.0 <= ingredient && ingredient <= &range.1 {
                 total += 1;
-                break;
             }
         }
     }
@@ -31,7 +31,53 @@ pub fn day5p1() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn parse_input<'a>(file: &'a str, ranges: &'a mut Vec<(usize, usize)>, ingredients: &'a mut Vec<usize>) {
+// 344638686630750 - TOO LOW
+pub fn day5p2() -> Result<(), Box<dyn Error>> {
+    // .0 lower bound .1 higher bound
+    let mut ranges: Vec<(usize, usize)> = Vec::new();
+    let mut merged: Vec<(usize, usize)> = Vec::new();
+    let mut ingredients: Vec<usize> = Vec::new();
+
+    let mut total = 0;
+
+    let file = io::read_file("inputs/d5")?;
+
+    parse_input(&file, &mut ranges, &mut ingredients);
+
+    // Only "growing" ranges
+    for range in &mut ranges {
+        if range.0 > range.1 {
+            std::mem::swap(&mut range.0, &mut range.1);
+        }
+    }
+
+    ranges.sort();
+
+    for i in 0..ranges.len() {
+        let (left, right) = ranges.split_at_mut(i + 1);
+        let curr_ran = &mut left[i]; // mutable reference to current
+        for check_ran in right {
+            if curr_ran.1 > check_ran.0 {
+                merged.push((curr_ran.0, check_ran.1));
+                break;
+            }
+        }
+    }
+
+    for range in merged {
+        total += range.1 - range.0 + 1;
+    }
+
+    println!("FINAL: {total}");
+
+    Ok(())
+}
+
+fn parse_input<'a>(
+    file: &'a str,
+    ranges: &'a mut Vec<(usize, usize)>,
+    ingredients: &'a mut Vec<usize>,
+) {
     let lines: Vec<&str> = file.lines().collect();
     let mut fir_sec = true;
 
