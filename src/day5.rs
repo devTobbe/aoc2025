@@ -31,6 +31,7 @@ pub fn day5p1() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
+// Calculate all valid IDs
 // 344638686630750 - TOO LOW
 pub fn day5p2() -> Result<(), Box<dyn Error>> {
     // .0 lower bound .1 higher bound
