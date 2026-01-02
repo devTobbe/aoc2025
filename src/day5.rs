@@ -33,6 +33,11 @@ pub fn day5p1() -> Result<(), Box<dyn Error>> {
 
 // Calculate all valid IDs
 // 344638686630750 - TOO LOW
+//
+// TODO(tobbe):
+// Reading of file is done and we have a set of pairs with ranges. I need to make
+// sure none of the pairs overlap in order to calculate the final amount of available
+// IDs.
 pub fn day5p2() -> Result<(), Box<dyn Error>> {
     // .0 lower bound .1 higher bound
     let mut ranges: Vec<(usize, usize)> = Vec::new();
