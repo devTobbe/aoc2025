@@ -38,6 +38,12 @@ pub fn day5p1() -> Result<(), Box<dyn Error>> {
 // Reading of file is done and we have a set of pairs with ranges. I need to make
 // sure none of the pairs overlap in order to calculate the final amount of available
 // IDs.
+// Functions needeed:
+// 1. Calculate total IDs: lop (list-of-pairs) -> usize
+// 2. Validate overlap Compare two pairs: pair pair -> bool
+// 3. Merge pairs:  pair pair -> pair
+// 4. Pipeline function (day5p2): lop  -> usize
+//
 pub fn day5p2() -> Result<(), Box<dyn Error>> {
     // .0 lower bound .1 higher bound
     let mut ranges: Vec<(usize, usize)> = Vec::new();
