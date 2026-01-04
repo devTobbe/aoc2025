@@ -71,16 +71,7 @@ pub fn day5p2() -> Result<(), Box<dyn Error>> {
 
     ranges.sort();
 
-    for i in 0..ranges.len() {
-        let (left, right) = ranges.split_at_mut(i + 1);
-        let curr_ran = &mut left[i]; // mutable reference to current
-        for check_ran in right {
-            if curr_ran.1 > check_ran.0 {
-                merged.push((curr_ran.0, check_ran.1));
-                break;
-            }
-        }
-    }
+    // Iterate over and find overlaps
 
     let total = calculate_total_ids(&merged);
 
