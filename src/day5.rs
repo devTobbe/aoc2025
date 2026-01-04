@@ -59,8 +59,6 @@ pub fn day5p2() -> Result<(), Box<dyn Error>> {
     let mut merged: Vec<(usize, usize)> = Vec::new();
     let mut ingredients: Vec<usize> = Vec::new();
 
-    let mut total = 0;
-
     let file = io::read_file("inputs/d5")?;
 
     parse_input(&file, &mut ranges, &mut ingredients);
@@ -85,16 +83,22 @@ pub fn day5p2() -> Result<(), Box<dyn Error>> {
         }
     }
 
-    for range in merged {
-        total += range.1 - range.0 + 1;
-    }
+    let total = calculate_total_ids(&merged);
 
     println!("FINAL: {total}");
 
     Ok(())
 }
 
-// Checks what kind of, if any, overlap paira and pairb has
+fn calculate_total_ids(ranges: &Vec<(usize, usize)>) -> usize {
+    let mut total = 0;
+    for range in ranges {
+        total += range.1 - range.0 + 1;
+    }
+    total
+}
+
+// Checks what kind of, if any, overlap paira and pairb has, assumes pair.0 < pair.1 tuple
 fn compare_pair(paira: (usize, usize), pairb: (usize, usize)) -> Overlap {
     // No overlap
     if paira.1 < pairb.0 || pairb.1 < paira.0 {
@@ -117,8 +121,11 @@ fn compare_pair(paira: (usize, usize), pairb: (usize, usize)) -> Overlap {
     }
 }
 
-
-fn merge_pair(low: usize, high: usize) -> (usize, usize) {
+fn merge_pair(
+    paira: (usize, usize),
+    pairb: (usize, usize),
+    overlap_type: Overlap,
+) -> (usize, usize) {
     todo!()
 }
 
