@@ -41,7 +41,7 @@ pub fn day5p1() -> Result<(), Box<dyn Error>> {
 
 // Calculate all valid IDs
 // 344638686630750 - TOO LOW
-//
+// 357907198933892 - OK!
 // TODO(tobbe):
 // Reading of file is done and we have a set of pairs with ranges. I need to make
 // sure none of the pairs overlap in order to calculate the final amount of available
@@ -62,16 +62,32 @@ pub fn day5p2() -> Result<(), Box<dyn Error>> {
 
     parse_input(&file, &mut ranges, &mut ingredients);
 
-    // Only "growing" ranges
+    // Normalize Data
     for range in &mut ranges {
         if range.0 > range.1 {
             std::mem::swap(&mut range.0, &mut range.1);
         }
     }
 
+    // Sorts after the 0th entry in a pair
     ranges.sort();
 
     // Iterate over and find overlaps
+    for range in ranges {
+        if merged.is_empty() {
+            merged.push(range);
+        } else {
+            let prev = merged.last().unwrap();
+
+            if let Some(overlap) = compare_pair(prev, &range) {
+                let new = merge_pair(prev, &range, overlap);
+                merged.pop();
+                merged.push(new);
+            } else {
+                merged.push(range);
+            }
+        }
+    }
 
     let total = calculate_total_ids(&merged);
 
@@ -89,7 +105,7 @@ fn calculate_total_ids(ranges: &Vec<(usize, usize)>) -> usize {
 }
 
 // Checks what kind of, if any, overlap paira and pairb has, assumes pair.0 < pair.1 tuple
-fn compare_pair(paira: (usize, usize), pairb: (usize, usize)) -> Option<Overlap> {
+fn compare_pair(paira: &(usize, usize), pairb: &(usize, usize)) -> Option<Overlap> {
     // No overlap
     if paira.1 < pairb.0 || pairb.1 < paira.0 {
         return None;
@@ -112,13 +128,13 @@ fn compare_pair(paira: (usize, usize), pairb: (usize, usize)) -> Option<Overlap>
 }
 
 fn merge_pair(
-    paira: (usize, usize),
-    pairb: (usize, usize),
+    paira: &(usize, usize),
+    pairb: &(usize, usize),
     overlap_type: Overlap,
 ) -> (usize, usize) {
     match overlap_type {
-        Overlap::AContainsB => paira,
-        Overlap::BContainsA => pairb,
+        Overlap::AContainsB => paira.clone(),
+        Overlap::BContainsA => pairb.clone(),
         Overlap::AFirst => (paira.0, pairb.1),
         Overlap::BFirst => (pairb.0, paira.1),
     }
