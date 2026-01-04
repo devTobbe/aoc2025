@@ -4,7 +4,6 @@ use crate::utils::io;
 
 #[derive(Debug, PartialEq)]
 enum Overlap {
-    None,
     AContainsB,
     BContainsA,
     AFirst,
@@ -99,25 +98,25 @@ fn calculate_total_ids(ranges: &Vec<(usize, usize)>) -> usize {
 }
 
 // Checks what kind of, if any, overlap paira and pairb has, assumes pair.0 < pair.1 tuple
-fn compare_pair(paira: (usize, usize), pairb: (usize, usize)) -> Overlap {
+fn compare_pair(paira: (usize, usize), pairb: (usize, usize)) -> Option<Overlap> {
     // No overlap
     if paira.1 < pairb.0 || pairb.1 < paira.0 {
-        return Overlap::None;
+        return None;
     }
 
     // Containment
     if paira.0 <= pairb.0 && paira.1 >= pairb.1 {
-        return Overlap::AContainsB;
+        return Some(Overlap::AContainsB);
     }
     if pairb.0 <= paira.0 && pairb.1 >= paira.1 {
-        return Overlap::BContainsA;
+        return Some(Overlap::BContainsA);
     }
 
     // Partial overlap
     if paira.0 < pairb.0 {
-        Overlap::AFirst
+        Some(Overlap::AFirst)
     } else {
-        Overlap::BFirst
+        Some(Overlap::BFirst)
     }
 }
 
@@ -126,7 +125,12 @@ fn merge_pair(
     pairb: (usize, usize),
     overlap_type: Overlap,
 ) -> (usize, usize) {
-    todo!()
+    match overlap_type {
+        Overlap::AContainsB => paira,
+        Overlap::BContainsA => pairb,
+        Overlap::AFirst => (paira.0, pairb.1),
+        Overlap::BFirst => (pairb.0, paira.1),
+    }
 }
 
 fn parse_input<'a>(
