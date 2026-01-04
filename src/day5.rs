@@ -2,6 +2,15 @@ use std::{collections::HashSet, error::Error};
 
 use crate::utils::io;
 
+#[derive(Debug, PartialEq)]
+enum Overlap {
+    None,
+    AContainsB,
+    BContainsA,
+    AFirst,
+    BFirst,
+}
+
 // 1040 - TOO HIGH
 // 862 - OK
 pub fn day5p1() -> Result<(), Box<dyn Error>> {
@@ -83,6 +92,34 @@ pub fn day5p2() -> Result<(), Box<dyn Error>> {
     println!("FINAL: {total}");
 
     Ok(())
+}
+
+// Checks what kind of, if any, overlap paira and pairb has
+fn compare_pair(paira: (usize, usize), pairb: (usize, usize)) -> Overlap {
+    // No overlap
+    if paira.1 < pairb.0 || pairb.1 < paira.0 {
+        return Overlap::None;
+    }
+
+    // Containment
+    if paira.0 <= pairb.0 && paira.1 >= pairb.1 {
+        return Overlap::AContainsB;
+    }
+    if pairb.0 <= paira.0 && pairb.1 >= paira.1 {
+        return Overlap::BContainsA;
+    }
+
+    // Partial overlap
+    if paira.0 < pairb.0 {
+        Overlap::AFirst
+    } else {
+        Overlap::BFirst
+    }
+}
+
+
+fn merge_pair(low: usize, high: usize) -> (usize, usize) {
+    todo!()
 }
 
 fn parse_input<'a>(
