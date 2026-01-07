@@ -6,6 +6,7 @@ mod day3;
 mod day4;
 mod day5;
 mod day6;
+mod day7;
 mod utils;
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -20,5 +21,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     //day5::day5p1()
     //day5::day5p2()
     //day6::day6p1()
-    day6::day6p2()
+    //day6::day6p2()
+    day7::day7p1()
 }
